@@ -1,10 +1,46 @@
 const express = require('express')
-const app = express()
-const port = 5000
+var MongoClient = require('mongodb').MongoClient;
+const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId;
+require('dotenv').config()
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const app = express()
+const port = process.env.PORT || 5000
+
+// middleware
+app.use(cors());
+app.use(express.json());
+
+var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.u39pp.mongodb.net:27017,cluster0-shard-00-01.u39pp.mongodb.net:27017,cluster0-shard-00-02.u39pp.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-8558zv-shard-0&authSource=admin&retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function run() {
+  try {
+    await client.connect();
+    const database = client.db("firstnet");
+    const services = database.collection("services");
+
+    // get services
+    app.get('/services', async (req, res) => {
+      const result = await services.find({}).toArray();
+      res.send(result);
+    })
+    app.get('/', (req, res) => {
+      res.send('Hello World!')
+    })
+  }
+  finally {
+    //await client.close();
+  }
+}
+run().catch(console.dir);
+
+
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Example my app listening at http://localhost:${port}`)
