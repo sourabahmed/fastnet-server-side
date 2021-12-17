@@ -19,12 +19,27 @@ async function run() {
     await client.connect();
     const database = client.db("firstnet");
     const services = database.collection("services");
+    const users = database.collection("users");
 
     // get services
     app.get('/services', async (req, res) => {
       const result = await services.find({}).toArray();
       res.send(result);
     })
+
+    // add user to database
+    app.post('/users', async (req, res) => {
+      const data = req.body;
+      const result = await users.insertOne(data);
+      res.send(result);
+      console.log('insert users');
+    })
+    app.get('/users', async (req, res) => {
+      const result = await users.find({}).toArray;
+      res.send(result);
+   
+    })
+
     app.get('/', (req, res) => {
       res.send('Hello World!')
     })
