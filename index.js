@@ -27,6 +27,12 @@ async function run() {
       res.send(result);
     })
 
+    // get single service using query
+    app.get('/singleService/:id', async (req, res) => {
+      const result = await services.findOne({ _id: ObjectId(req.params.id) });
+      res.send(result);
+    })
+
     // add user to database
     app.post('/users', async (req, res) => {
       const data = req.body;
@@ -40,9 +46,6 @@ async function run() {
    
     })
 
-    app.get('/', (req, res) => {
-      res.send('Hello World!')
-    })
   }
   finally {
     //await client.close();
@@ -54,7 +57,9 @@ run().catch(console.dir);
 
 
 
-
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
 
 app.listen(port, () => {
