@@ -20,6 +20,7 @@ async function run() {
     const database = client.db("firstnet");
     const services = database.collection("services");
     const users = database.collection("users");
+    const orders = database.collection("orders");
 
     // get services
     app.get('/services', async (req, res) => {
@@ -44,6 +45,14 @@ async function run() {
       const result = await users.find({}).toArray;
       res.send(result);
    
+    })
+
+    // post order data
+    app.post('/orders', async (req, res) => {
+      const data = req.body;
+      const result = await orders.insertOne(data);
+      res.send(result);
+      console.log('posted data');
     })
 
   }
