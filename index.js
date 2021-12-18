@@ -41,11 +41,18 @@ async function run() {
       res.send(result);
       console.log('insert users');
     })
-    app.get('/users', async (req, res) => {
-      const result = await users.find({}).toArray;
-      res.send(result);
-   
+
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await allUsers.findOne(query);
+      let isAdmin = false;
+      if (user?.role === 'admin') {
+        isAdmin = true;
+      }
+      res.send({ admin: isAdmin });
     })
+
 
     // post order data
     app.post('/orders', async (req, res) => {
@@ -53,6 +60,18 @@ async function run() {
       const result = await orders.insertOne(data);
       res.send(result);
       console.log('posted data');
+    })
+
+    //get order data
+    app.get('/orders', async (req, res) => {
+      const result = await orders.find({}).toArray();
+      res.send(result);
+    })
+
+    // delete order
+    app.delete('/deleteOrder/:id', async (req, res) => {
+      const result = await orders.deleteOne({ _id: ObjectId(req.params.id) })
+      res.send(result);
     })
 
   }
