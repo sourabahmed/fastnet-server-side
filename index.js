@@ -42,10 +42,11 @@ async function run() {
       console.log('insert users');
     })
 
+    //get user 
     app.get('/users/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
-      const user = await allUsers.findOne(query);
+      const user = await users.findOne(query);
       let isAdmin = false;
       if (user?.role === 'admin') {
         isAdmin = true;
@@ -53,6 +54,14 @@ async function run() {
       res.send({ admin: isAdmin });
     })
 
+     // add admin
+     app.put('/users/admin', async(req, res) => {
+      const user = req.body;
+      const filter = {email: user.email};
+      const update = {$set: {role: 'admin'}};
+      const result = await users.updateOne(filter, update);
+      res.send(result)
+    })
 
     // post order data
     app.post('/orders', async (req, res) => {
