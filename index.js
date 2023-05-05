@@ -11,13 +11,13 @@ const port = process.env.PORT || 5000
 app.use(cors());
 app.use(express.json());
 
-var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0-shard-00-00.u39pp.mongodb.net:27017,cluster0-shard-00-01.u39pp.mongodb.net:27017,cluster0-shard-00-02.u39pp.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-8558zv-shard-0&authSource=admin&retryWrites=true&w=majority`;
+var uri = `mongodb+srv://firstnet:Tiger720@cluster0.wfg9xnd.mongodb.net/test`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 async function run() {
   try {
     await client.connect();
-    const database = client.db("firstnet");
+    const database = client.db("fastnet-database");
     const services = database.collection("services");
     const users = database.collection("users");
     const orders = database.collection("orders");
